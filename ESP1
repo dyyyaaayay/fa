@@ -1,1 +1,164 @@
-\\
+// Online C compiler to run C program online
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
+int main() {
+/* //№1
+    int a, b;
+    printf("Before:");
+    scanf("%d%d", &a, &b);
+    a = a * b; 
+    b = a / b;  
+    a = a / b;
+    
+    printf("After: %d, %d", a, b);
+
+    return 0;
+    */
+/* //№2
+    double a, b, c;
+
+    printf("Legs: ");
+    scanf("%lf%lf", &a, &b);
+
+    c = sqrt(a*a + b*b);
+
+    printf("Hypotenuse: %lf",c);
+
+    return 0;
+*/
+/*//№3
+    int a;
+    printf("Number: ");
+    scanf("%d", &a);
+
+    printf("last: %d", a%10);
+    return 0;
+    */
+/*//№4
+    int n, t;
+
+    printf("Number: ");
+    scanf("%d", &n);
+
+    if (n >= 10) {
+        t = (n / 10) % 10;} else {t = 0;}
+
+    printf("res: %d", t);
+
+    return 0;*/
+/*//№5
+    int a;
+    printf("Number: ");
+    scanf("%d", &a);
+
+    printf("last: %d", abs(a)/10);
+    return 0;*/
+/* //№6
+    int a, b;
+    double average;
+
+    printf("Numbers: ");
+    scanf("%d%d", &a, &b);
+
+    average = (a + b) / 2.0;
+
+    printf("Average: %.2f\n", average);
+    return 0;*/
+
+/*//№7
+    int a,b;
+    double average_g;
+
+    printf("Numbers: ");
+    scanf("%d%d", &a, &b);
+
+    average_g = sqrt(a * b);
+
+    printf("Average: %.2f\n", average_g);
+
+    return 0;
+*/
+/*//№8
+    float x1, y1, x2, y2;
+    float d;
+
+    printf("X1 & Y1: ");
+    scanf("%f%f", &x1, &y1);
+
+    printf("X2 & Y2: ");
+    scanf("%f%f", &x2, &y2);
+
+    d = sqrt(pow(x2 - x1, 2) + pow(y2 - y1,2));
+
+    printf("D = %.2f\n", d);
+
+    return 0;*/
+/*//№9
+    int a, b, c, sr;
+
+    printf("Numbers: ");
+    scanf("%d%d%d", &a, &b, &c);
+
+    if ((a > b && a < c) || (a < b && a > c)) {sr = a;
+    } else if ((b > a && b < c) || (b < a && b > c)) {sr = b;
+    } else {
+        sr = c;
+    }
+
+    printf("Srednee: %d", sr);
+
+    return 0;*/
+/*10
+    float a, b, c, d, x1, x2;
+
+    printf("Coefs:");
+    scanf("%f%f%f", &a, &b, &c);
+
+    d = b * b - 4 * a * c;
+
+    if (d > 0) {
+        x1 = (-b + sqrt(d)) / (2 * a);
+        x2 = (-b - sqrt(d)) / (2 * a);
+        printf("x1 & x2: %.2f %.2f\n", x1, x2);
+    } else if (d == 0) {
+        x1 = -b / (2 * a);
+        printf("x1: %.2f\n", x1);
+    } else {
+        printf("no solution");
+    }
+    return 0;*/
+/*//№11
+    int a, b, c, max;
+
+    printf("Numbers: ");
+    scanf("%d%d%d", &a, &b, &c);
+
+    max = a;
+
+    if (b > max) {max = b;}
+    if (c > max) {max = c;}
+
+    printf("Maximum: %d", max);
+    return 0;*/
+/*//№12
+    int a, b, c;
+
+    printf("Edges: ");
+    scanf("%d%d%d", &a, &b, &c);
+
+    if (a + b > c && b + c > a && a + c > b) {
+        if (a == b && b == c) {
+            printf("Можно, равносторонний");
+        } else if (a == b || b == c || a == c) {
+            printf("Можно, равнобедренный");
+        } else {
+            printf("Можно, разносторонний");
+        }
+    } else {
+        printf("doesn't exist");
+    }
+
+    return 0;*/
+}
