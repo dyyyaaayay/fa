@@ -14,6 +14,45 @@ bool isPrime(int n) {
     return true;
 }
 
+int Squares(int n) {
+    int i;
+    for(i = 1; i*i <= n; ++i) {
+        int square = i * i;
+        printf("%d ", square);
+    }
+}
+
+bool is22(int n) {
+    while (n % 22 == 0) {
+        n /= 22;
+    }
+    if (n == 1) {
+        return true; } else {return false;}
+}
+
+int rating(int r) {
+    switch (r) {
+        case 1:
+            printf("Плохо");
+            break;
+        case 2:
+            printf("Неудовлетворительно");
+            break;
+        case 3:
+            printf("Удовлетворительно");
+            break;
+        case 4:
+            printf("Хорошо");
+            break;
+        case 5:
+            printf("Отличн");
+            break;
+        default:
+            printf("Ошибка, введите верную оценку");
+    }
+}
+
+
 int main() {
 /* //№1
     int a, b;
@@ -264,4 +303,50 @@ int main() {
     printf("Min: %d \n", min);
     printf("Max: %d \n", max);
     return 0;*/
+/*//№19
+    int n;
+    printf("N: ");
+    scanf("%d", &n);
+
+    Squares(n);
+    printf("\n");
+
+    return 0;*/
+/*//№20
+    int n;
+    printf("N: ");
+    scanf("%d", &n);
+
+    if (is22(n)) {
+        printf("yes");
+    } else {
+        printf("no");
+    }
+
+    return 0;*/
+
+/*//№21
+    int N;
+    printf("N: ");
+    scanf("%d", &N);
+
+    if (N == 0) {
+        printf("0");
+        return;
+    }
+
+    while (N > 0) {
+        int d = N % 10; 
+        printf("%d ", d);
+        N /= 10; 
+    }
+    return 0;*/
+
+/* //№23
+    int r;
+    printf("Полученная оценка:");
+    scanf("%d", &r);
+    rating(r);
+    return 0;*/
+    
 }
