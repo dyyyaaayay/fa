@@ -2,6 +2,17 @@
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
+#include <stdbool.h>
+
+bool isPrime(int n) {
+    if (n <= 1)
+        return false;
+
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0)
+            return false;}
+    return true;
+}
 
 int main() {
 /* //№1
@@ -160,5 +171,97 @@ int main() {
         printf("doesn't exist");
     }
 
+    return 0;*/
+/*//№13
+    int x, y;
+    printf("X & Y: ");
+	scanf("%d %d", &x, &y);
+	if (x == 0 && y == 0){
+	    printf("На начале координат");
+	}else if(x == 0 || y == 0){
+	    printf("Точка лежитосей");
+	}else if(x > 0 && y > 0){
+	    printf("Точка лежит в первой четверти");
+	}else if(x < 0 && y > 0){
+	    printf("Точка лежит во второй четверти");
+	}else if(x < 0 && y < 0){
+	    printf("Точка лежит в третьей четверти");
+	}else{
+	    printf("Точка лежит в четвертой четверти");
+	}
+    return 0;*/
+
+/*//№14
+    int n, factorial = 1;
+	printf("Number: ");
+	scanf("%d", &n);
+	while(n >= 2){
+	    factorial = factorial * n;
+	    n -= 2;
+	}
+	printf("Answer: %d", factorial);
+	return 0;*/
+	
+/*//№15
+    int n, factorial = 1;
+    printf("Number: ");
+	scanf("%d", &n);
+	for(int i=n; i >= 2; i=i-2){
+	    factorial = factorial * i;
+	}
+	printf("Answer: %d", factorial);
+	return 0;*/
+
+/*//№16
+    int a, b;
+
+    printf("Start & end:");
+    scanf("%d%d", &a, &b);
+    
+    printf("Answer:");
+    for (int i = a; i <= b; i++) {
+        if (isPrime(i)) {
+            printf("%d ", i);
+        }
+    }
+
+    return 0;*/
+
+/*//№17
+    int n, sum;
+    printf("1:");
+    scanf("%d", &n);
+    while(n != -9999){
+        sum+= n;
+        printf("Next: ");
+        scanf("%d", &n);
+    }
+    sum+= -9999;
+    printf("Sum: %d", sum);
+    return 0;*/
+
+/*//№18
+    int n;
+    printf("1:");
+    scanf("%d", &n);
+    int min, max,
+    min = n;
+    max = n;
+    while(n != 0){
+        if(n > max){
+            max = n;
+            printf("Next:");
+            scanf("%d", &n);
+        } else if(n < min){
+            min = n;
+            printf("Next:");
+            scanf("%d", &n);
+        } else{
+        printf("Next: ");
+        scanf("%d", &n);
+        }
+    }
+    printf("Min: %d \n", min);
+    printf("Max: %d \n", max);
     return 0;*/
 }
