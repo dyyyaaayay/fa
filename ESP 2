@@ -143,5 +143,99 @@ int main() {
     }
     
     return 0; */
+/*//№13 
+    int size;
+    printf("Size: ");
+    scanf("%d", &size);
+    
+    int arr[size];
+    
+    printf("Arr: ");
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &arr[i]);
+    }
+
+    int maxIndex = 0, minIndex = 0;
+    for (int i = 1; i < size; i++) {
+        if (arr[i] > arr[maxIndex]) {
+            maxIndex = i;
+        }
+        if (arr[i] < arr[minIndex]) {
+            minIndex = i;
+        }
+    }
+    
+    int start, end;
+    if (maxIndex < minIndex) {
+        start = maxIndex;
+        end = minIndex;} else {
+        start = minIndex;
+        end = maxIndex;}
+    
+    int sum = 0;
+    for (int i = start; i <= end; i++) {
+        sum += arr[i];}
+    
+    printf("Res: %d", sum);
+    return 0;*/
+    
+/*//№14
+    int size;
+    printf("Size: ");
+    scanf("%d", &size);
+    
+    int arr[size];
+    
+    printf("Arr: ");
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &arr[i]);
+    }
+    
+    int m = size;
+    int y = 0;
+    
+    for (int i = 0; i < size; i++) {
+        if (arr[i] < 0) {
+            m = i; 
+            break; }}
+    
+    for (int i = 0; i <= m; i++) {
+        int res = 1;
+        for (int j = 0; j <= i; j++) {
+            res *= arr[j];
+        }
+        y += res; 
+    }
+    
+    printf("Res: %d", y);
+    
+    return 0;*/
+/*//№15    
+    int size;
+    printf("Size: ");
+    scanf("%d", &size);
+    
+    int arr[size];
+    
+    printf("Arr: ");
+    for (int i = 0; i < size; i++) {
+        scanf("%d", &arr[i]);
+    }
+    
+    int temp;
+    for (int i = 0; i < 2; i++) {
+    temp = arr[0];
+  
+    for (int j = 0; j < size - 1; j++) { arr[j] = arr[j + 1];}
+  
+    arr[size - 1] = temp;}
+ 
+    printf("Res: ");
+     for (int i = 0; i < size; i++) {
+    printf("%d ", arr[i]);
+    }
+    
+    return 0;
+    */
 }
 
