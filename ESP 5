@@ -1,0 +1,881 @@
+###1	Реализуйте класс матрицы и методы
+a.	Сложение и вычитание матриц.
+b.	Умножение матрицы на число.
+c.	Произведение двух матриц.
+d.	Транспонированная матрица.
+e.	Возведение матрицы в степень.
+f.	Если метод, возвращает матрицу, то он должен возвращать новый объект, а не менять базовый.###
+
+#include <iostream>
+#include <vector>
+
+class Matrix {
+private:
+    std::vector<std::vector<int>> data;
+    int rows;
+    int cols;
+
+public:
+    Matrix(int rows, int cols) : rows(rows), cols(cols) {
+        data.resize(rows, std::vector<int>(cols, 0));
+    }
+
+    Matrix(const Matrix& other) : rows(other.rows), cols(other.cols), data(other.data) {}
+
+    // a. Сложение матриц
+    Matrix operator+(const Matrix& other) const {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument("Matrix dimensions must match for addition.");
+        }
+
+        Matrix result(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.data[i][j] = data[i][j] + other.data[i][j];
+            }
+        }
+
+        return result;
+    }
+
+    // a. Вычитание матриц
+    Matrix operator-(const Matrix& other) const {
+        if (rows != other.rows || cols != other.cols) {
+            throw std::invalid_argument("Matrix dimensions must match for subtraction.");
+        }
+
+        Matrix result(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.data[i][j] = data[i][j] - other.data[i][j];
+            }
+        }
+
+        return result;
+    }
+
+    // b. Умножение матрицы на число
+    Matrix operator*(int scalar) const {
+        Matrix result(rows, cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.data[i][j] = data[i][j] * scalar;
+            }
+        }
+
+        return result;
+    }
+
+    // c. Произведение двух матриц
+    Matrix operator*(const Matrix& other) const {
+        if (cols != other.rows) {
+            throw std::invalid_argument("Number of columns in the first matrix must match the number of rows in the second matrix for multiplication.");
+        }
+
+        Matrix result(rows, other.cols);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < other.cols; j++) {
+                for (int k = 0; k < cols; k++) {
+                    result.data[i][j] += data[i][k] * other.data[k][j];
+                }
+            }
+        }
+
+        return result;
+    }
+
+    // d. Транспонированная матрица
+    Matrix transpose() const {
+        Matrix result(cols, rows);
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                result.data[j][i] = data[i][j];
+            }
+        }
+
+        return result;
+    }
+
+    // e. Возведение матрицы в степень
+    Matrix power(int exponent) const {
+        if (rows != cols) {
+            throw std::invalid_argument("Matrix must be square for exponentiation.");
+        }
+
+        if (exponent < 0) {
+            throw std::invalid_argument("Exponent must be non-negative.");
+        }
+
+        Matrix result(*this);
+        Matrix temp(*this);
+
+        for (int i = 1; i < exponent; i++) {
+            result = result * temp;
+        }
+
+        return result;
+    }
+};
+
+int main() {
+    Matrix matrix1(2, 2);
+    matrix1 = {{1, 2}, {3, 4}};
+
+    Matrix matrix2(2, 2);
+    matrix2 = {{5, 6}, {7, 8}};
+
+    // a. Сложение матриц
+    Matrix sum = matrix1 + matrix2;
+
+    // a. Вычитание матриц
+    Matrix difference = matrix1 - matrix2;
+
+    // b. Умножение матрицы на число
+    Matrix scalarProduct = matrix1 * 3;
+
+    // c. Произведение двух матриц
+    Matrix matrixProduct = matrix1 * matrix2;
+
+    // d. Транспонированная матрица
+    Matrix transposed = matrix1.transpose();
+
+    // e. Возведение матрицы в степень
+    Matrix power = matrix1.power(2);
+
+    return 0;
+}
+
+
+###2	Создайте класс, который описывает вектор (в трёхмерном пространстве).
+У него должны быть:
+a.	конструктор с параметрами в виде списка координат x, y, z
+b.	метод, вычисляющий длину вектора. (sqrt(x^2 + y^2 + z^2)). Корень можно посчитать с помощью Math.sqrt()
+ 
+c.	метод, вычисляющий скалярное произведение (x1x2 + y1y2 + z1z2).
+ 
+d.	метод, вычисляющий векторное произведение с другим вектором (y1z2 - z1y2 , z1x2 - x1z2, x1y2 - y1x2)
+ 
+e.	метод, вычисляющий угол между векторами (или косинус угла): косинус угла между векторами равен скалярному произведению векторов, деленному на произведение модулей (длин) векторов ((a, b)/(|a| * |b|))
+ 
+f.	методы для суммы и разности (x1 + x2, y1 + y2, z1 + z2) и (x1 - x2, y1 - y2, z1 - z2)
+ 
+g.	статический метод, который принимает целое число N, и возвращает массив случайных векторов размером N
+h.	Если метод возвращает вектор, то он должен возвращать новый объект, а не менять базовый###
+
+#include <iostream>
+#include <vector>
+#include <cmath>
+#include <random>
+
+class Vector {
+private:
+    double x;
+    double y;
+    double z;
+
+public:
+    // a. Конструктор с параметрами в виде списка координат x, y, z
+    Vector(double x, double y, double z) : x(x), y(y), z(z) {}
+
+    // b. Метод, вычисляющий длину вектора
+    double length() const {
+        return std::sqrt(x * x + y * y + z * z);
+    }
+
+    // c. Метод, вычисляющий скалярное произведение
+    double dotProduct(const Vector& other) const {
+        return x * other.x + y * other.y + z * other.z;
+    }
+
+    // d. Метод, вычисляющий векторное произведение
+    Vector crossProduct(const Vector& other) const {
+        double resultX = y * other.z - z * other.y;
+        double resultY = z * other.x - x * other.z;
+        double resultZ = x * other.y - y * other.x;
+
+        return Vector(resultX, resultY, resultZ);
+    }
+
+    // e. Метод, вычисляющий угол между векторами
+    double angle(const Vector& other) const {
+        double dot = dotProduct(other);
+        double lengthProduct = length() * other.length();
+
+        return std::acos(dot / lengthProduct);
+    }
+
+    // f. Методы для суммы и разности
+    Vector operator+(const Vector& other) const {
+        double resultX = x + other.x;
+        double resultY = y + other.y;
+        double resultZ = z + other.z;
+
+        return Vector(resultX, resultY, resultZ);
+    }
+
+    Vector operator-(const Vector& other) const {
+        double resultX = x - other.x;
+        double resultY = y - other.y;
+        double resultZ = z - other.z;
+
+        return Vector(resultX, resultY, resultZ);
+    }
+
+    // g. Статический метод, возвращающий массив случайных векторов
+    static std::vector<Vector> generateRandomVectors(int N) {
+        std::random_device rd;
+        std::mt19937 gen(rd());
+        std::uniform_real_distribution<double> dis(-1.0, 1.0);
+
+        std::vector<Vector> randomVectors;
+        randomVectors.reserve(N);
+
+        for (int i = 0; i < N; i++) {
+            double randomX = dis(gen);
+            double randomY = dis(gen);
+            double randomZ = dis(gen);
+
+            randomVectors.emplace_back(randomX, randomY, randomZ);
+        }
+
+        return randomVectors;
+    }
+};
+
+int main() {
+    Vector vector1(1.0, 2.0, 3.0);
+    Vector vector2(4.0, 5.0, 6.0);
+
+    // b. Вычисление длины вектора
+    double length = vector1.length();
+
+    // c. Вычисление скалярного произведения
+    double dotProduct = vector1.dotProduct(vector2);
+
+    // d. Вычисление векторного произведения
+    Vector crossProduct = vector1.crossProduct(vector2);
+
+    // e. Вычисление угла между векторами
+    double angle = vector1.angle(vector2);
+
+    // f. Вычисление суммы и разности векторов
+    Vector sum = vector1 + vector2;
+    Vector difference = vector1 - vector2;
+
+    // g. Генерация массива случайных векторов
+    std::vector<Vector> randomVectors = Vector::generateRandomVectors(5);
+
+    return 0;
+}
+
+
+###3	Реализовать иерархию классов, описывающие трехмерные фигуры (Рисунок 1)
+Класс Box является контейнером, он можем содержать в себе другие фигуры. Метод add() принимает на вход Shape. Нужно добавлять новые фигуры до тех пор, пока для них хватаем места в Box (будем считать только объём, игнорируя форму. Допустим, мы переливаем жидкость). Если места для добавления новой фигуры не хватает, то метод должен вернуть false.
+
+
+#include <iostream>
+#include <vector>
+
+class Shape {
+public:
+    virtual double getVolume() const = 0;
+};
+
+class Box : public Shape {
+private:
+    double capacity;
+    std::vector<Shape*> shapes;
+
+public:
+    Box(double capacity) : capacity(capacity) {}
+
+    bool add(Shape* shape) {
+        if (getRemainingCapacity() >= shape->getVolume()) {
+            shapes.push_back(shape);
+            return true;
+        }
+        return false;
+    }
+
+    double getRemainingCapacity() const {
+        double usedCapacity = 0;
+        for (const auto& shape : shapes) {
+            usedCapacity += shape->getVolume();
+        }
+        return capacity - usedCapacity;
+    }
+
+    double getVolume() const override {
+        return capacity;
+    }
+};
+
+class Sphere : public Shape {
+private:
+    double radius;
+
+public:
+    Sphere(double radius) : radius(radius) {}
+
+    double getVolume() const override {
+        return (4.0 / 3.0) * 3.14159 * radius * radius * radius;
+    }
+};
+
+class Cube : public Shape {
+private:
+    double side;
+
+public:
+    Cube(double side) : side(side) {}
+
+    double getVolume() const override {
+        return side * side * side;
+    }
+};
+
+int main() {
+    Box box(100.0);
+
+    Sphere sphere(5.0);
+    if (box.add(&sphere)) {
+        std::cout << "Added sphere to the box." << std::endl;
+    } else {
+        std::cout << "Not enough space to add sphere to the box." << std::endl;
+    }
+
+    Cube cube(10.0);
+    if (box.add(&cube)) {
+        std::cout << "Added cube to the box." << std::endl;
+    } else {
+        std::cout << "Not enough space to add cube to the box." << std::endl;
+    }
+
+    return 0;
+}
+
+
+###4	Реализуйте ту же иерархию классов, но сделав некоторые классы абстрактными
+
+#include <iostream>
+#include <vector>
+
+class Shape {
+public:
+    virtual double getVolume() const = 0;
+};
+
+class Box : public Shape {
+private:
+    double capacity;
+    std::vector<Shape*> shapes;
+
+public:
+    Box(double capacity) : capacity(capacity) {}
+
+    bool add(Shape* shape) {
+        if (getRemainingCapacity() >= shape->getVolume()) {
+            shapes.push_back(shape);
+            return true;
+        }
+        return false;
+    }
+
+    double getRemainingCapacity() const {
+        double usedCapacity = 0;
+        for (const auto& shape : shapes) {
+            usedCapacity += shape->getVolume();
+        }
+        return capacity - usedCapacity;
+    }
+
+    double getVolume() const override {
+        return capacity;
+    }
+};
+
+class Sphere : public Shape {
+private:
+    double radius;
+
+public:
+    Sphere(double radius) : radius(radius) {}
+
+    double getVolume() const override {
+        return (4.0 / 3.0) * 3.14159 * radius * radius * radius;
+    }
+};
+
+class Cube : public Shape {
+private:
+    double side;
+
+public:
+    Cube(double side) : side(side) {}
+
+    double getVolume() const override {
+        return side * side * side;
+    }
+};
+
+int main() {
+    Box box(100.0);
+
+    Sphere sphere(5.0);
+    if (box.add(&sphere)) {
+        std::cout << "Added sphere to the box." << std::endl;
+    } else {
+        std::cout << "Not enough space to add sphere to the box." << std::endl;
+    }
+
+    Cube cube(10.0);
+    if (box.add(&cube)) {
+        std::cout << "Added cube to the box." << std::endl;
+    } else {
+        std::cout << "Not enough space to add cube to the box." << std::endl;
+    }
+
+    return 0;
+}
+
+
+
+
+
+### 5	Напишите класс, конструктор которого принимает два массива: массив значений и массив весов значений.
+Класс должен содержать метод, который будет возвращать элемент из первого массива случайным образом, с учётом его веса.
+Пример:
+Дан массив [1, 2, 3], и массив весов [1, 2, 10].
+В среднем, значение «1» должно возвращаться в 2 раза реже, чем значение «2» и в десять раз реже, чем значение «3».###
+
+
+#include <iostream>
+#include <vector>
+#include <random>
+
+class WeightedRandom {
+private:
+    std::vector<int> values;
+    std::vector<int> weights;
+    std::random_device rd;
+    std::mt19937 gen;
+
+public:
+    WeightedRandom(const std::vector<int>& vals, const std::vector<int>& wts) : values(vals), weights(wts), gen(rd()) {}
+
+    int getRandomValue() {
+        std::discrete_distribution<int> distribution(weights.begin(), weights.end());
+        return values[distribution(gen)];
+    }
+};
+
+int main() {
+    std::vector<int> values = {1, 2, 3};
+    std::vector<int> weights = {1, 2, 10};
+
+    WeightedRandom wr(values, weights);
+
+    // Пример использования
+    for (int i = 0; i < 10; i++) {
+        int randomValue = wr.getRandomValue();
+        std::cout << randomValue << " ";
+    }
+
+    return 0;
+}
+
+
+###6 Создать класс Tiles (кафель), который будет содержать поля с открытым доступом: brand, size_h, size_w, price и метод класса getData(). В главной функции объявить пару объектов класса и внести данные в поля. Затем отобразить их, вызвав метод getData().
+
+#include <iostream>
+#include <string>
+
+class Tiles {
+public:
+    std::string brand;
+    int size_h;
+    int size_w;
+    double price;
+
+    void getData() {
+        std::cout << "Brand: " << brand << std::endl;
+        std::cout << "Size (height x width): " << size_h << " x " << size_w << std::endl;
+        std::cout << "Price: $" << price << std::endl;
+    }
+};
+
+int main() {
+    Tiles tile1;
+    tile1.brand = "Example Brand";
+    tile1.size_h = 10;
+    tile1.size_w = 20;
+    tile1.price = 15.99;
+
+    Tiles tile2;
+    tile2.brand = "Another Brand";
+    tile2.size_h = 15;
+    tile2.size_w = 30;
+    tile2.price = 19.99;
+
+    tile1.getData();
+    std::cout << std::endl;
+    tile2.getData();
+
+    return 0;
+}
+
+
+###7 Определить класс Children, который содержит такие поля (члены класса): закрытые – имя ребенка, фамилию и возраст , публичные – методы ввода данных и отображения их на экран. Объявить два объекта класса, внести данные и показать их.
+
+#include <iostream>
+#include <string>
+
+class Children {
+private:
+    std::string name;
+    std::string surname;
+    int age;
+
+public:
+    void setData(const std::string& childName, const std::string& childSurname, int childAge) {
+        name = childName;
+        surname = childSurname;
+        age = childAge;
+    }
+
+    void displayData() {
+        std::cout << "Name: " << name << std::endl;
+        std::cout << "Surname: " << surname << std::endl;
+        std::cout << "Age: " << age << std::endl;
+    }
+};
+
+int main() {
+    Children child1;
+    child1.setData("John", "Doe", 8);
+
+    Children child2;
+    child2.setData("Jane", "Smith", 10);
+
+    child1.displayData();
+    std::cout << std::endl;
+    child2.displayData();
+
+    return 0;
+}
+
+
+###8 Преобразовать строки двумерного массива в столбцы. Класс будет содержать два метода: один заполнит массив значениями, второй произведет замену значений строк на значения столбцов.
+
+#include <iostream>
+#include <vector>
+
+class ArrayConverter {
+private:
+    std::vector<std::vector<int>> array;
+
+public:
+    void fillArray(const std::vector<std::vector<int>>& values) {
+        array = values;
+    }
+
+    void convertToColumns() {
+        std::vector<std::vector<int>> columns(array[0].size(), std::vector<int>(array.size()));
+
+        for (size_t i = 0; i < array.size(); i++) {
+            for (size_t j = 0; j < array[i].size(); j++) {
+                columns[j][i] = array[i][j];
+            }
+        }
+
+        array = columns;
+    }
+
+    void displayArray() {
+        for (size_t i = 0; i < array.size(); i++) {
+            for (size_t j = 0; j < array[i].size(); j++) {
+                std::cout << array[i][j] << " ";
+            }
+            std::cout << std::endl;
+        }
+    }
+};
+
+int main() {
+    ArrayConverter converter;
+
+    std::vector<std::vector<int>> values = {
+        {1, 2, 3},
+        {4, 5, 6},
+        {7, 8, 9}
+    };
+
+    converter.fillArray(values);
+
+    std::cout << "Original Array:" << std::endl;
+    converter.displayArray();
+
+    converter.convertToColumns();
+
+    std::cout << "Converted Array:" << std::endl;
+    converter.displayArray();
+
+    return 0;
+}
+
+
+###9 Создать 3 класса(базовый и 2 предка) которые описывают некоторых работников с почасовой оплатой (один из предков) и фиксированой оплатой (второй предок).
+Описать в базовом классе абстрактный метод для расчета среднемесячной зарплаты.
+Для «почасовщиков» формула для расчета такая: «среднемесячная зарплата = 20.8*8*ставка в час»,
+для работников с фиксированой оплатой «среднемесячная зарплата = фиксированой месячной оплате».
+a)Упорядочить всю последовательность рабочих по убыванию среднемесячной зарплаты.
+При совпадении зарплаты – упорядочить данные в алфавитном порядке по имени. Вывести идентификатор работника,
+имя и среднемесячную зарплату для всех елементов списка.
+b)Вывести первые 5 имен работников из полученого выше списка (задача А).
+c)Вывести последние 3 идентификаторы работников из полученого више списка (задача А).
+d)Организовать запись и чтение колекции в/из файл(а)
+e)Организовать обработку некоректного формата входного файла###
+
+
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <algorithm>
+
+// Базовый класс "Работник"
+class Worker {
+protected:
+    int id;
+    std::string name;
+public:
+    Worker(int id, std::string name) : id(id), name(name) {}
+    virtual double calculateMonthlySalary() = 0; // Абстрактный метод для расчета среднемесячной зарплаты
+};
+
+// Предок "Почасовщик"
+class HourlyWorker : public Worker {
+private:
+    double hourlyRate;
+public:
+    HourlyWorker(int id, std::string name, double hourlyRate) : Worker(id, name), hourlyRate(hourlyRate) {}
+    double calculateMonthlySalary() override {
+        return 20.8 * 8 * hourlyRate; // Формула для расчета среднемесячной зарплаты почасовщика
+    }
+};
+
+// Предок "Работник с фиксированной оплатой"
+class FixedSalaryWorker : public Worker {
+private:
+    double monthlySalary;
+public:
+    FixedSalaryWorker(int id, std::string name, double monthlySalary) : Worker(id, name), monthlySalary(monthlySalary) {}
+    double calculateMonthlySalary() override {
+        return monthlySalary; // Среднемесячная зарплата работника с фиксированной оплатой
+    }
+};
+
+// Функция для сравнения работников по убыванию среднемесячной зарплаты
+bool compareWorkers(const Worker* w1, const Worker* w2) {
+    if (w1->calculateMonthlySalary() == w2->calculateMonthlySalary()) {
+        return w1->name < w2->name; // Сортировка по имени в алфавитном порядке при совпадении зарплаты
+    }
+    return w1->calculateMonthlySalary() > w2->calculateMonthlySalary();
+}
+
+int main() {
+    std::vector<Worker*> workers;
+
+    // Добавляем работников в список
+    workers.push_back(new HourlyWorker(1, "Иван", 10.0));
+    workers.push_back(new FixedSalaryWorker(2, "Петр", 5000.0));
+    workers.push_back(new HourlyWorker(3, "Анна", 15.0));
+    workers.push_back(new FixedSalaryWorker(4, "Мария", 6000.0));
+
+    // Сортируем работников по убыванию среднемесячной зарплаты
+    std::sort(workers.begin(), workers.end(), compareWorkers);
+
+    // Выводим идентификатор, имя и среднемесячную зарплату для всех работников
+    for (const auto& worker : workers) {
+        std::cout << "Идентификатор: " << worker->id << ", Имя: " << worker->name << ", Среднемесячная зарплата: " << worker->calculateMonthlySalary() << std::endl;
+    }
+
+    // Выводим первые 5 имен работников
+    std::cout << "Первые 5 имен работников:" << std::endl;
+    for (int i = 0; i < 5 && i < workers.size(); i++) {
+        std::cout << workers[i]->name << std::endl;
+    }
+
+    // Выводим последние 3 идентификатора работников
+    std::cout << "Последние 3 идентификатора работников:" << std::endl;
+    for (int i = workers.size() - 1; i >= 0 && i >= workers.size() - 3; i--) {
+        std::cout << workers[i]->id << std::endl;
+    }
+
+    // Записываем коллекцию в файл
+    std::ofstream outputFile("workers.txt");
+    if (outputFile.is_open()) {
+        for (const auto& worker : workers) {
+            outputFile << worker->id << " " << worker->name << " " << worker->calculateMonthlySalary() << std::endl;
+        }
+        outputFile.close();
+    }
+
+    // Читаем коллекцию из файла
+    std::ifstream inputFile("workers.txt");
+    if (inputFile.is_open()) {
+        int id;
+        std::string name;
+        double salary;
+        while (inputFile >> id >> name >> salary) {
+            // Создаем объекты работников и добавляем их в список
+            if (salary == 20.8 * 8 * 10.0) {
+                workers.push_back(new HourlyWorker(id, name, salary));
+            } else {
+                workers.push_back(new FixedSalaryWorker(id, name, salary));
+            }
+        }
+        inputFile.close();
+    }
+
+    // Обработка некорректного формата входного файла
+    // Если формат файла некорректен, можно вывести сообщение об ошибке или выполнить другие действия по обработке ошибки.
+
+    // Освобождаем память, удаляя объекты работников
+    for (const auto& worker : workers) {
+        delete worker;
+    }
+
+    return 0;
+}
+
+
+###10 Реализовать классы транспортных карт с фиксированной оплаты в месяц и поразовой оплаты. Фиксированная оплата в месяц зависит от вида карты (Студенческая, Школьная, Социальная).Поразовая оплата возможно как списание денег с баланса, так и штучная поездка, если они есть в наличии. Необходимо реализовать методы пополнения карты через банкомат, через мобильный телефон. У поразового билета приоритет оплаты из поштучных поездок. Реализовать классы банкомата и мобильного приложения, для пополнения баланса. Реализовать класс терминала оплаты для проверки оплаты поездки (это проверяет терминал, а не карта). Реализовать возможность вывода статистики терминала оплаты (Какая проходимость, сколько снялось поштучных, сколько заработал денег, количество поездок)
+
+
+#include <iostream>
+#include <vector>
+
+// Базовый класс "Транспортная карта"
+class TransportCard {
+protected:
+    double monthlyPayment;
+    double balance;
+public:
+    TransportCard(double monthlyPayment) : monthlyPayment(monthlyPayment), balance(0.0) {}
+    virtual void topUp(double amount) = 0; // Абстрактный метод для пополнения карты
+    virtual bool makePayment() = 0; // Абстрактный метод для оплаты поездки
+};
+
+// Предок "Карта с фиксированной оплатой в месяц"
+class FixedPaymentCard : public TransportCard {
+private:
+    std::string cardType;
+public:
+    FixedPaymentCard(double monthlyPayment, std::string cardType) : TransportCard(monthlyPayment), cardType(cardType) {}
+    void topUp(double amount) override {
+        balance += amount; // Пополнение баланса карты
+    }
+    bool makePayment() override {
+        if (balance >= monthlyPayment) {
+            balance -= monthlyPayment; // Списание фиксированной оплаты
+            return true;
+        }
+        return false;
+    }
+};
+
+// Предок "Карта с поразовой оплатой"
+class PerRideCard : public TransportCard {
+private:
+    int numRides;
+public:
+    PerRideCard(double balance) : TransportCard(0.0), numRides(0) {
+        this->balance = balance;
+    }
+    void topUp(double amount) override {
+        balance += amount; // Пополнение баланса карты
+    }
+    bool makePayment() override {
+        if (numRides > 0) {
+            numRides--; // Списание поштучной поездки
+            return true;
+        } else if (balance >= monthlyPayment) {
+            balance -= monthlyPayment; // Списание фиксированной оплаты
+            return true;
+        }
+        return false;
+    }
+    void addRides(int num) {
+        numRides += num; // Добавление поштучных поездок
+    }
+};
+
+// Класс "Банкомат"
+class ATM {
+public:
+    void topUpCard(TransportCard* card, double amount) {
+        card->topUp(amount); // Пополнение карты через банкомат
+    }
+};
+
+// Класс "Мобильное приложение"
+class MobileApp {
+public:
+    void topUpCard(TransportCard* card, double amount) {
+        card->topUp(amount); // Пополнение карты через мобильное приложение
+    }
+};
+
+// Класс "Терминал оплаты"
+class PaymentTerminal {
+private:
+    int numPasses;
+    double totalRevenue;
+    int numRides;
+public:
+    PaymentTerminal() : numPasses(0), totalRevenue(0.0), numRides(0) {}
+    void checkPayment(TransportCard* card) {
+        if (card->makePayment()) {
+            numPasses++; // Увеличение счетчика проходимости
+            totalRevenue += card->monthlyPayment; // Увеличение общей выручки
+            numRides++; // Увеличение счетчика поездок
+        }
+    }
+    void printStatistics() {
+        std::cout << "Проходимость: " << numPasses << std::endl;
+        std::cout << "Выручка: " << totalRevenue << std::endl;
+        std::cout << "Количество поездок: " << numRides << std::endl;
+    }
+};
+
+int main() {
+    // Создание объектов карт
+    FixedPaymentCard studentCard(100.0, "Студенческая");
+    FixedPaymentCard schoolCard(80.0, "Школьная");
+    FixedPaymentCard socialCard(50.0, "Социальная");
+    PerRideCard perRideCard(30.0);
+
+    // Создание объектов банкомата, мобильного приложения и терминала оплаты
+    ATM atm;
+    MobileApp mobileApp;
+    PaymentTerminal paymentTerminal;
+
+    // Пополнение карт через банкомат и мобильное приложение
+    atm.topUpCard(&studentCard, 50.0);
+    mobileApp.topUpCard(&schoolCard, 30.0);
+    atm.topUpCard(&perRideCard, 20.0);
+
+    // Добавление поштучных поездок на карту с поразовой оплатой
+    perRideCard.addRides(5);
+
+    // Проверка оплаты поездки через терминал оплаты
+    paymentTerminal.checkPayment(&studentCard);
+    paymentTerminal.checkPayment(&schoolCard);
+    paymentTerminal.checkPayment(&socialCard);
+    paymentTerminal.checkPayment(&perRideCard);
+
+    // Вывод статистики терминала оплаты
+    paymentTerminal.printStatistics();
+
+    return 0;
+}
