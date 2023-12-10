@@ -1,0 +1,269 @@
+1) Двоичное дерево поиска.
+
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+
+Node* createNode(int value) {
+    Node* newNode = new Node();
+    if (newNode == nullptr) {
+        std::cout << "Memory allocation failed" << std::endl;
+        return nullptr;
+    }
+    newNode->data = value;
+    newNode->left = newNode->right = nullptr;
+    return newNode;
+}
+
+Node* insertNode(Node* root, int value) {
+    if (root == nullptr) {
+        return createNode(value);
+    }
+    if (value < root->data) {
+        root->left = insertNode(root->left, value);
+    }
+    else if (value > root->data) {
+        root->right = insertNode(root->right, value);
+    }
+    return root;
+}
+
+bool searchValue(Node* root, int value) {
+    if (root == nullptr) {
+        return false;
+    }
+    if (value == root->data) {
+        return true;
+    }
+    if (value < root->data) {
+        return searchValue(root->left, value);
+    }
+    return searchValue(root->right, value);
+}
+
+void deleteTree(Node* root) {
+    if (root != nullptr) {
+        deleteTree(root->left);
+        deleteTree(root->right);
+        delete root;
+    }
+}
+
+int main() {
+    Node* root = nullptr;
+    root = insertNode(root, 50);
+    root = insertNode(root, 30);
+    root = insertNode(root, 20);
+    root = insertNode(root, 40);
+    root = insertNode(root, 70);
+    root = insertNode(root, 60);
+    root = insertNode(root, 80);
+
+    int value = 50;
+    if (searchValue(root, value)) {
+        std::cout << value << " found in the tree." << std::endl;
+    }
+    else {
+        std::cout << value << " not found in the tree." << std::endl;
+    }
+
+    deleteTree(root);
+    return 0;
+}
+
+
+2) Heap. Реализовать функции заполнения «кучи», поиска значения в структуре.
+
+#include <iostream>
+#include <vector>
+
+void heapify(std::vector<int>& arr, int size, int i) {
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < size && arr[left] > arr[largest]) {
+        largest = left;
+    }
+
+    if (right < size && arr[right] > arr[largest]) {
+        largest = right;
+    }
+
+    if (largest != i) {
+        std::swap(arr[i], arr[largest]);
+        heapify(arr, size, largest);
+    }
+}
+
+void buildHeap(std::vector<int>& arr) {
+    int size = arr.size();
+
+    for (int i = size / 2 - 1; i >= 0; i--) {
+        heapify(arr, size, i);
+    }
+}
+
+bool searchValue(const std::vector<int>& arr, int value) {
+    for (int i = 0; i < arr.size(); i++) {
+        if (arr[i] == value) {
+            return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    std::vector<int> arr = { 12, 7, 5, 10, 15, 17, 11 };
+
+    buildHeap(arr);
+
+    int value = 10;
+    if (searchValue(arr, value)) {
+        std::cout << value << " found in the heap." << std::endl;
+    }
+    else {
+        std::cout << value << " not found in the heap." << std::endl;
+    }
+
+    return 0; } 
+
+3) Связные списки. Реализовать функцию заполнения связных списков.
+
+#include <iostream>
+
+struct Node {
+    int data;
+    Node* next;
+};
+
+void insertNode(Node** head, int value) {
+    Node* newNode = new Node();
+    newNode->data = value;
+    newNode->next = nullptr;
+
+    if (*head == nullptr) {
+        *head = newNode;
+    }
+    else {
+        Node* temp = *head;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = newNode;
+    }
+}
+
+bool searchValue(Node* head, int value) {
+    Node* temp = head;
+    while (temp != nullptr) {
+        if (temp->data == value) {
+            return true;
+        }
+        temp = temp->next;
+    }
+    return false;
+}
+
+void deleteList(Node** head) {
+    Node* current = *head;
+    Node* next;
+    while (current != nullptr) {
+        next = current->next;
+        delete current;
+        current = next;
+    }
+    *head = nullptr;
+}
+
+int main() {
+    Node* head = nullptr;
+    insertNode(&head, 10);
+    insertNode(&head, 20);
+    insertNode(&head, 30);
+    insertNode(&head, 40);
+
+    int value = 20;
+    if (searchValue(head, value)) {
+        std::cout << value << " found in the linked list." << std::endl;
+    }
+    else {
+        std::cout << value << " not found in the linked list." << std::endl;
+    }
+
+    deleteList(&head);
+
+    return 0;
+}
+
+4) Префиксное дерево. Реализовать функцию заполнения префиксного дерева.
+
+#include <iostream>
+#include <unordered_map>
+
+class TrieNode {
+public:
+    std::unordered_map<char, TrieNode*> children;
+    bool isEndOfWord;
+
+    TrieNode() {
+        isEndOfWord = false;
+    }
+};
+
+class Trie {
+private:
+    TrieNode* root;
+
+public:
+    Trie() {
+        root = new TrieNode();
+    }
+
+    void insertWord(std::string word) {
+        TrieNode* current = root;
+
+        for (const char& c : word) {
+            if (current->children.find(c) == current->children.end()) {
+                current->children[c] = new TrieNode();
+            }
+            current = current->children[c];
+        }
+
+        current->isEndOfWord = true;
+    }
+
+    bool searchWord(std::string word) {
+        TrieNode* current = root;
+
+        for (const char& c : word) {
+            if (current->children.find(c) == current->children.end()) {
+                return false;
+            }
+            current = current->children[c];
+        }
+
+        return current->isEndOfWord;
+    }
+};
+
+int main() {
+    Trie trie;
+    trie.insertWord("apple");
+    trie.insertWord("banana");
+    trie.insertWord("cherry");
+
+    std::string word = "banana";
+    if (trie.searchWord(word)) {
+        std::cout << word << " found in the prefix tree." << std::endl;
+    }
+    else {
+        std::cout << word << " not found in the prefix tree." << std::endl;
+    }
+
+    return 0;
+}
